@@ -10,4 +10,3 @@ export class Description extends Component {
     );
   }
 }
-export default Description;

@@ -5,7 +5,7 @@ export class Navigation extends Component {
     let lists = [];
     let i = 0;
     while(i < data.length){
-      lists.push(<li key={data[i].id}><a href={"/contents/"+data[i].id}>{data[i].link}</a></li>);
+      lists.push(<li key={data[i].id}><a href={"/content/"+data[i].id}>{data[i].link}</a></li>);
       i = i+1;
     }
     return (
