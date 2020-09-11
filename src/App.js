@@ -8,14 +8,14 @@ class App extends Component {
   constructor(props){
     super(props);
     this.state = {
-      mode:'welcome',
+      mode:'read',
       subject:{name:"devkim"},
       welcome:{desc:"welcome to my react page!"},
-      // contents[0]:{desc:"react is hard to understand but fun to do"}
+      read:{desc:"welcom this is read description"},
       contents:[
-        {id:1 , link:"aa"},
-        {id:2 , link:"bb"},
-        {id:3 , link:"cc"}
+        {id:1 , link:"kwanghyun" , desc:"19900706"},
+        {id:2 , link:"mirei" , desc:"19921129"},
+        {id:3 , link:"ross" , desc:"20190314"}
       ]
     }
   }
@@ -24,24 +24,26 @@ class App extends Component {
     if(this.state.mode === "welcome"){
       desc_ = this.state.welcome.desc;
     }else if(this.state.mode === "read"){
-      desc_ = this.state.contents[0].desc;
+      desc_ = this.state.read.desc;
     }
     return (
       <div className="App">
-        {/* <Subject name={this.state.subject.name}></Subject> */}
+        <Subject 
+        name={this.state.subject.name}
+        onChangePage = {function(){
+          this.setState({mode:'welcome'});
+        }.bind(this)}
+        >
+        </Subject>
       
-        <header>
-          <h1> <a href="/" onClick={function(e){
-            alert("hi");
-            e.preventDefault();
-            // this.state.mode = 'welcome';
-            this.setState({
-              mode:"welcome"
-            });
-          }.bind(this)}>{this.state.subject.name}</a></h1>
-        </header>
-
-        <Navigation data={this.state.contents}></Navigation>
+        <Navigation 
+        onChangePage = {function(){
+          alert("hihihi");
+          this.setState({mode: 'read'});
+        }.bind(this)}
+        data={this.state.contents}
+        >
+        </Navigation>
 
         <Description desc={desc_}></Description>
       </div>
