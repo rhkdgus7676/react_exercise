@@ -3,9 +3,20 @@ export class CreateDescription extends Component {
   render() {
     return (
       <article>
+        <h1>Create</h1>
         <div>
-          <form action="">
-            
+          <form action="/create_process" method="post"
+          onSubmit={function(e){
+            e.preventDefault();
+            this.props.onSubmit(
+              e.target.desc.value             
+            );
+            alert("submitted!")
+          }.bind(this)}
+          >
+            <p><input type="text" name="title" placeholder="title!"></input></p>
+            <p> <textarea name="desc" placeholder="description"></textarea> </p>
+            <p> <input type="submit"></input> </p>
           </form>
         </div>
       </article>

@@ -10,8 +10,9 @@ import { Control } from "./Components/Control";
 class App extends Component {
   constructor(props) {
     super(props);
+    this.max_content_id = 3;
     this.state = {
-      mode: "read",
+      mode: "welcome",
       selected_content_id: 2,
       subject: { name: "devkim" },
       welcome: { desc: "welcome to my react page!" },
@@ -20,23 +21,41 @@ class App extends Component {
         { id: 1, link: "kwanghyun", desc: "19900706" },
         { id: 2, link: "mirei", desc: "19921129" },
         { id: 3, link: "ross", desc: "20190314" },
-      ],
+      ]
     };
   }
   render() {
-    let desc_ = null;
+    let _desc, _article = null;
     if (this.state.mode === "welcome") {
-      desc_ = this.state.welcome.desc;
+      _desc = this.state.welcome.desc;
+      _article = <ReadDescription desc={_desc}></ReadDescription>
     } else if (this.state.mode === "read") {
       let i = 0;
       while (i < this.state.contents.length) {
         let data = this.state.contents[i];
         if (data.id === this.state.selected_content_id) {
-          desc_ = data.desc;
+          _desc = data.desc;
           break;
         }
         i = i + 1;
       }
+      _article = <ReadDescription desc={_desc}></ReadDescription>
+    }else if(this.state.mode === "create"){
+      _article= <CreateDescription 
+      onSubmit = {function(_desc){
+        //add content to this.state.contents
+        this.max_content_id = this.max_content_id + 1;
+        // this.state.contents.push({id: this.max_content_id , desc:_desc});
+        // this.setState({
+        //   contents:this.state.contents
+        // });
+        let _contents =  this.state.contents.concat(
+          {id: this.max_content_id , desc:_desc}
+        );
+        this.setState({
+         contents:_contents
+        });
+      }.bind(this)}></CreateDescription>
     }
     return (
       <div className="App">
@@ -65,7 +84,8 @@ class App extends Component {
          }.bind(this)}
         ></Control>
 
-        <ReadDescription desc={desc_}></ReadDescription>
+         {_article}
+         
       </div>
     );
   }
