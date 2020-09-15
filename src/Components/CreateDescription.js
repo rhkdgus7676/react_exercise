@@ -9,8 +9,10 @@ export class CreateDescription extends Component {
           onSubmit={function(e){
             e.preventDefault();
             this.props.onSubmit(
-              e.target.desc.value             
+              e.target.title.value,
+              e.target.desc.value
             );
+            //이 순서로 메뉴가 추가가 됨
             alert("submitted!")
           }.bind(this)}
           >

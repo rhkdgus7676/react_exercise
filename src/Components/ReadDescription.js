@@ -4,6 +4,7 @@ export class ReadDescription extends Component {
     return (
       <article>
         <div>
+          <p>{this.props.title}</p>
           <p>{this.props.desc}</p>
         </div>
       </article>
