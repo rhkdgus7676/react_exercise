@@ -7,7 +7,6 @@ import { Navigation } from "./Components/Navigation";
 import { Control } from "./Components/Control";
 import { UpdateContent } from "./Components/UpdateContent";
 
-
 class App extends Component {
   constructor(props) {
     super(props);
@@ -16,17 +15,20 @@ class App extends Component {
       mode: "welcome",
       selected_content_id: 2,
       subject: { name: "devkim" },
-      welcome: {title: "hello there!" , desc: "welcome to my react page!"},
-      read: {title:"this is read section" , desc: "welcom this is read description"},
+      welcome: { title: "hello there!", desc: "welcome to my react page!" },
+      read: {
+        title: "this is read section",
+        desc: "welcom this is read description",
+      },
       contents: [
-        { id: 1, title:"i am kwanghyun" ,  desc: "19900706" },
-        { id: 2, title:"this is mirei" , desc: "19921129"  },
-        { id: 3, title:"this is ross" , desc: "20190314"  },
-      ]
+        { id: 1, title: "i am kwanghyun", desc: "19900706" },
+        { id: 2, title: "this is mirei", desc: "19921129" },
+        { id: 3, title: "this is ross", desc: "20190314" },
+      ],
     };
   }
 
-  getReadContent(){
+  getReadContent() {
     let i = 0;
     while (i < this.state.contents.length) {
       let data = this.state.contents[i];
@@ -38,47 +40,80 @@ class App extends Component {
     }
   }
 
-  getContent(){
-    let _desc, _article, _title = null;
+  getContent() {
+    let _desc,
+      _article,
+      _title = null;
+
+    //welcome section
     if (this.state.mode === "welcome") {
       _desc = this.state.welcome.desc;
       _title = this.state.welcome.title;
-      _article = <ReadDescription desc={_desc} title={_title}></ReadDescription>
-    } 
+      _article = (
+        <ReadDescription desc={_desc} title={_title}></ReadDescription>
+      );
+    }
+    //read section
     else if (this.state.mode === "read") {
-     let _content = this.getReadContent();
-      _article = <ReadDescription desc={_content.desc} title={_content.title}></ReadDescription>
-    }
-    else if(this.state.mode === "create"){
-      _article= <CreateDescription 
-      onSubmit = {function(_title , _desc){
-        //add content to this.state.contents
-        this.max_content_id = this.max_content_id + 1;
-        // this.state.contents.push({id: this.max_content_id , desc:_desc});
-        // this.setState({
-        //   contents:this.state.contents
-        // });
-        let _contents =  this.state.contents.concat(
-          {id: this.max_content_id , desc:_desc , title:_title}
-        )
-        this.setState({
-         contents:_contents
-        });
-      }.bind(this)}></CreateDescription>
-    }
-    else if(this.state.mode === "update"){
       let _content = this.getReadContent();
-      _article= <UpdateContent 
-      data = {_content}
-      onSubmit = {function(_title , _desc){        
-        this.max_content_id = this.max_content_id + 1;       
-        let _contents =  this.state.contents.concat(
-          {id: this.max_content_id , title:_title , desc:_desc}
-        );
-        this.setState({
-         contents:_contents
-        });
-      }.bind(this)}></UpdateContent>
+      _article = (
+        <ReadDescription
+          desc={_content.desc}
+          title={_content.title}
+        ></ReadDescription>
+      );
+    }
+    //create section
+    else if (this.state.mode === "create") {
+      _article = (
+        <CreateDescription
+          onSubmit={function (_title, _desc) {
+            //add content to this.state.contents
+            this.max_content_id = this.max_content_id + 1;
+            // this.state.contents.push({id: this.max_content_id , desc:_desc});
+            // this.setState({
+            //   contents:this.state.contents
+            // });
+            let _contents = this.state.contents.concat({
+              id: this.max_content_id,
+              desc: _desc,
+              title: _title,
+            });
+            this.setState({
+              contents: _contents,
+              mode: "read",
+              selected_content_id: this.max_content_id,
+            });
+          }.bind(this)}
+        ></CreateDescription>
+      );
+    }
+
+    //update section
+    else if (this.state.mode === "update") {
+      let _content = this.getReadContent();
+      _article = (
+        <UpdateContent
+          data={_content}
+          onSubmit={function (_id, _title, _desc) {
+            //immutable technique, needs when improving performance
+            // when changing array or object, use concat,array.from..etc(immutable methods)
+            let _contents = Array.from(this.state.contents);
+            let i = 0;
+            while (i < _contents.length) {
+              if (_contents[i].id === _id) {
+                _contents[i] = { id: _id, title: _title, desc: _desc };
+                break;
+              }
+              i = i + 1;
+            }
+            this.setState({
+              contents: _contents,
+              mode: "read",
+            });
+          }.bind(this)}
+        ></UpdateContent>
+      );
     }
     return _article;
   }
@@ -104,14 +139,36 @@ class App extends Component {
         ></Navigation>
 
         <Control
-         onChangeMode={function(mode_){
-           this.setState({
-             mode:mode_
-           });
-         }.bind(this)}
+          onChangeMode={function (_mode) {
+            //delete section
+            if (_mode === "delete") {
+              if (window.confirm("are you sure?")) {
+                let _contents = Array.from(this.state.contents);
+                let i = 0;
+                while (i < _contents.length) {
+                  if (_contents[i].id === this.state.selected_content_id) {
+                    _contents.splice(i, 1);
+                    break;
+                  }
+                  i = i + 1;
+                }
+                this.setState({
+                  mode: "welcome",
+                  selected_content_id: 1,
+                  contents: _contents,
+                  
+                });
+                alert("deleted!");
+              }
+            } else {
+              this.setState({
+                mode: _mode
+              });
+            }
+          }.bind(this)}
         ></Control>
 
-         {this.getContent()}
+        {this.getContent()}
       </div>
     );
   }

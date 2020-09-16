@@ -3,6 +3,7 @@ export class UpdateContent extends Component {
   constructor(props){
     super(props);
     this.state={
+      id: this.props.data.id,
       title: this.props.data.title,
       desc: this.props.data.desc
     }
@@ -20,13 +21,13 @@ export class UpdateContent extends Component {
       <article>
         <h1>Update</h1>
         <div>
-
           <form action="/create_process" method="post"
           onSubmit={function(e){
             e.preventDefault();
             this.props.onSubmit(
-              e.target.title.value,
-              e.target.desc.value              
+              this.state.id,
+              this.state.title,
+              this.state.desc              
             );
             alert("updated!!")
           }.bind(this)}
